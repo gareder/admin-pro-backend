@@ -82,7 +82,6 @@ const returnImage = (req, res = response) => {
     res.sendFile(imagePath);
   }
   
-
 }
 
 module.exports = {
