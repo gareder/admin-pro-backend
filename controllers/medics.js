@@ -36,22 +36,66 @@ const createMedic = async(req, res = response) => {
 
 }
 
-const updateMedic = (req, res = response) => {
+const updateMedic = async(req, res = response) => {
+  // Medic ID
+  const { id } = req.params;
+  // User ID
+  const uid = req.id;
 
-  res.json({
-    ok: true,
-    msg: 'PUT medic'
-  });
+  try {
+
+    const dbMedic = await Medic.findById(id);
+    if(!dbMedic) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'No medic found'
+      });
+    }
+  
+    const medicChanges = { ...req.body, user: uid };
+    const updatedMedic = await Medic.findByIdAndUpdate(id, medicChanges, { new: true });
+    
+    res.json({
+      ok: true,
+      updatedMedic
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      msg: 'Chck with admin'
+    });
+  }
 
 }
 
-const deleteMedic = (req, res = response) => {
+const deleteMedic = async(req, res = response) => {
 
-  res.json({
-    ok: true,
-    msg: 'DELETE medic'
-  });
+  // Medic ID
+  const { id } = req.params;
 
+  try {
+
+    const dbMedic = await Medic.findById(id);
+    if(!dbMedic) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'No medic found'
+      });
+    }
+  
+    await Medic.findByIdAndDelete(id)
+    
+    res.json({
+      ok: true
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      msg: 'Chck with admin'
+    });
+  }
 }
 
 module.exports = {

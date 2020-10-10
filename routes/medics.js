@@ -1,4 +1,4 @@
-// Route /api/hospitals
+// Route /api/medics
 const { Router } = require('express');
 const { check } = require('express-validator');
 const { fieldValidator } = require('../middlewares/field-validator');
@@ -17,9 +17,14 @@ router.post('/', [
   fieldValidator
 ], createMedic);
 
-router.put('/:id', [], updateMedic);
+router.put('/:id', [
+  validateJWT,
+  check('name', 'Medic name is required').notEmpty(),
+  check('hospital', 'Hospital ID must be valid').isMongoId(),
+  fieldValidator
+], updateMedic);
 
-router.delete('/:id', deleteMedic);
+router.delete('/:id', validateJWT, deleteMedic);
 
 
 module.exports = router;
