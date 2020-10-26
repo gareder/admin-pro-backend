@@ -3,7 +3,7 @@ const Medic = require('../models/medic');
 
 const getMedics = async(req, res = response) => {
 
-  const medics = await Medic.find().populate('user', 'name').populate('hospital', 'name');
+  const medics = await Medic.find().populate('user', ['name', 'img']).populate('hospital', ['name', 'img']);
 
   res.json({
     ok: true,
@@ -98,9 +98,34 @@ const deleteMedic = async(req, res = response) => {
   }
 }
 
+const getMedic = async(req, res = response) => {
+
+  const id = req.params.id;
+
+  try {
+
+    const medic = await Medic.findById(id).populate('user', ['name', 'img']).populate('hospital', ['name', 'img']);
+
+    res.json({
+      ok: true,
+      medic
+    });
+    
+  } catch (error) {
+    console.log(error);
+    res.json({
+      ok: false,
+      msg: 'Check with admin'
+    });
+  }
+
+
+}
+
 module.exports = {
   getMedics,
   createMedic,
   updateMedic,
-  deleteMedic
+  deleteMedic,
+  getMedic
 }

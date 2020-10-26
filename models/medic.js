@@ -4,6 +4,7 @@ const MedicSchema = Schema({
 
   name: { type: String, required: true },
   img: { type: String },
+  status: { type: Number, required: true, default: 1 },
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   hospital: { type: Schema.Types.ObjectId, ref: 'Hospital', required: true }
 
