@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const User = require('../models/user');
 
 
 const validateJWT = (req, res, next) => {
@@ -27,6 +28,41 @@ const validateJWT = (req, res, next) => {
   }
 }
 
+const validateADMIN_ROLE = async(req, res, next) => {
+
+  const id = req.id;
+
+  try {
+
+    const dbUser = await User.findById(id);
+
+    if (!dbUser) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'No user found'
+      });
+    }
+
+    if (dbUser.role !== 'ADMIN_ROLE') {
+      return res.status(403).json({
+        ok: false,
+        msg: 'Unauthorized'
+      });
+    }
+
+    next();
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: 'Check with the system administrator'
+    });
+  }
+
+}
+
 module.exports = {
-  validateJWT
+  validateJWT,
+  validateADMIN_ROLE
 }
