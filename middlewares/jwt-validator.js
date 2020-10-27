@@ -62,7 +62,48 @@ const validateADMIN_ROLE = async(req, res, next) => {
 
 }
 
+const validateADMIN_ROLE_or_SameUser = async(req, res, next) => {
+
+  const id = req.id;
+  // Getting the id of the user you'd like to modify
+  const paramsId = req.params.id;
+
+  try {
+
+    const dbUser = await User.findById(id);
+
+    if (!dbUser) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'No user found'
+      });
+    }
+
+    if (dbUser.role === 'ADMIN_ROLE' || id === paramsId) {
+     
+      next();
+
+    } else {
+
+      return res.status(403).json({
+        ok: false,
+        msg: 'Unauthorized'
+      });
+
+    }
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: 'Check with the system administrator'
+    });
+  }
+
+}
+
 module.exports = {
   validateJWT,
-  validateADMIN_ROLE
+  validateADMIN_ROLE,
+  validateADMIN_ROLE_or_SameUser
 }
