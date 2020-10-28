@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 const { dbConnection } = require('./database/config');
 
@@ -26,6 +27,11 @@ app.use('/api/medics', require('./routes/medics'));
 app.use('/api/all', require('./routes/searches'));
 app.use('/api/login', require('./routes/auth'));
 app.use('/api/uploads', require('./routes/uploads'));
+
+//
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'public/index.html'));
+});
 
 
 
